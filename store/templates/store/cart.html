@@ -4,9 +4,12 @@
     <div>
         <h2>{{ product.name }}</h2>
         <p>Quantity: {{ product.quantity }}</p>
+        <a href="{% url 'decrease_quantity' product.pk %}">-</a>
+        <a href="{% url 'increase_quantity' product.pk %}">+</a>
+
         <p>Price: £{{ product.price }}</p>
         <a href="{% url 'remove_from_cart' product.pk %}">
-        Remove Item
+        Remove Item.
         </a>
     </div>
 {% empty %}

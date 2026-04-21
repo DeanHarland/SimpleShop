@@ -36,21 +36,25 @@ def remove_from_cart(request, pk):
     return redirect('cart')
 
 
-# def remove_from_cart(request,pk):
-#         product = get_object_or_404(Product, pk=pk)
-#         cart = request.session.get('cart', {})
-
-#         if str(pk) in cart:
-#              cart[str(pk)]['quantity'] -= 1
-#         elif str(pk) in cart and cart[str(pk)]['quantity'] <= 0:
-            
-#         else:
-#              pass
+def decrease_quantity(request,pk):
+        cart = request.session.get('cart', {})
         
-#         request.session['cart'] = cart
+        if str(pk) in cart:
+             cart[str(pk)]['quantity'] -= 1
+             if str(pk) in cart and cart[str(pk)]['quantity'] <= 0:
+                del cart[str(pk)]
+         
+        request.session['cart'] = cart
+        return redirect('cart')
 
-#         return redirect('cart')
+def increase_quantity(request, pk):
+    cart = request.session.get('cart', {})
 
+    if str(pk) in cart:
+        cart[str(pk)]['quantity'] += 1
+
+    request.session['cart'] = cart
+    return redirect('cart')
 
 def cart_view(request):
     cart = request.session.get('cart', {})
