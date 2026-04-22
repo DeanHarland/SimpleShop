@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Product
+from .models import Product, Order, OrderItem
 # Create your views here.
 
 def product_detail(request, pk):
@@ -95,4 +95,13 @@ def checkout(request):
 
     request.session['cart'] = {}
 
-    return redirect('product_list')
+    return redirect('order_confirmation', order_id=order.id)
+
+def order_confirmation(request, order_id):
+    order = Order.objects.get(id=order_id)
+    items = OrderItem.objects.filter(order=order)
+
+    return render(request, 'store/order_confirmation.html', {
+        'order': order,
+        'items': items
+    })
