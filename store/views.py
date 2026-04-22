@@ -66,3 +66,33 @@ def cart_view(request):
         products.append(product)
 
     return render(request, 'store/cart.html', {'products': products})
+
+
+def checkout(request):
+    cart = request.session.get('cart', {})
+
+    if not cart:
+        return redirect('product_list')
+
+    total = 0
+    order = Order.objects.create(total=0)
+
+    for key, value in cart.items():
+        product = Product.objects.get(pk=key)
+        quantity = value['quantity']
+
+        total += product.price * quantity
+
+        OrderItem.objects.create(
+            order=order,
+            product=product,
+            quantity=quantity,
+            price=product.price
+        )
+
+    order.total = total
+    order.save()
+
+    request.session['cart'] = {}
+
+    return redirect('product_list')
