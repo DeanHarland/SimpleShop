@@ -1,6 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Product, Order, OrderItem
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -67,7 +68,7 @@ def cart_view(request):
 
     return render(request, 'store/cart.html', {'products': products})
 
-
+@login_required
 def checkout(request):
     cart = request.session.get('cart', {})
 
@@ -75,7 +76,7 @@ def checkout(request):
         return redirect('product_list')
 
     total = 0
-    order = Order.objects.create(total=0)
+    order = Order.objects.create(user=request.user if request.user.is_authenticated else None,total=0)
 
     for key, value in cart.items():
         product = Product.objects.get(pk=key)
@@ -105,3 +106,8 @@ def order_confirmation(request, order_id):
         'order': order,
         'items': items
     })
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'store/my_orders.html', {'orders': orders})
