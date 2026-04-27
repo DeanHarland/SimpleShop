@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{%block content%}
 <h1>Your Cart</h1>
 
 {% for product in products %}
@@ -17,3 +18,4 @@
     <p>Your cart is empty</p>
 {% endfor %}
 <a href="{% url 'checkout' %}">Checkout</a>
+{% endblock%}
