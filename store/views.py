@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404,redirect
+from django.db.models import Count
 from .models import Product, Order, OrderItem
 from django.contrib.auth.decorators import login_required
 
@@ -60,13 +61,22 @@ def increase_quantity(request, pk):
 def cart_view(request):
     cart = request.session.get('cart', {})
     products = []
+    cart_total = 0
+    cart_items_count = 0
 
     for key, value in cart.items():
         product = Product.objects.get(pk=key)
         product.quantity = value['quantity']
+        product.line_total = product.price * product.quantity
+        cart_total += product.line_total
+        cart_items_count += product.quantity
         products.append(product)
 
-    return render(request, 'store/cart.html', {'products': products})
+    return render(request, 'store/cart.html', {
+        'products': products,
+        'cart_total': cart_total,
+        'cart_items_count': cart_items_count,
+    })
 
 @login_required
 def checkout(request):
@@ -109,5 +119,5 @@ def order_confirmation(request, order_id):
 
 @login_required
 def my_orders(request):
-    orders = Order.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user).annotate(item_count=Count('orderitem')).order_by('-created_at')
     return render(request, 'store/my_orders.html', {'orders': orders})
