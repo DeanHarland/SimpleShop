@@ -1,4 +1,12 @@
+<head>
+
+</head>
 {% extends 'store/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'store/css/product_list.css' %}">
+{% endblock %}
 
 {% block content %}
 <h1>Products</h1>
@@ -10,6 +18,9 @@
                 {{ product.name }}
             </a>
         </h2>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% endif %}
         <p>£{{ product.price }}</p>
         <a href="{% url 'add_to_cart' product.pk %}">
         Add to Cart
