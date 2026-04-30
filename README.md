@@ -3,6 +3,9 @@
 ## Overview
 A full-stack eCommerce web application built with Django, featuring product browsing, cart functionality, and a simulated checkout system.
 
+## Visit live version
+https://simpleshop-80f5b8cdaaaa.herokuapp.com/
+
 ## Features
 - Product listing and detail pages
 - Session-based shopping cart
@@ -26,9 +29,6 @@ A full-stack eCommerce web application built with Django, featuring product brow
 4. Add environment variables (.env)
 5. Run migrations
 6. Start server
-
-## Visit live version
-https://simpleshop-80f5b8cdaaaa.herokuapp.com/
 
 ## What I Learned
 - Building full-stack Django applications
