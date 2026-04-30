@@ -1,7 +1,13 @@
 # SimpleShop – Django eCommerce App
 
+<p align="center">
+	<img src="SimpleShopImage.png" alt="SimpleShop storefront screenshot" width="960" style="max-width: 100%; height: auto; display: block; margin: 0 auto 24px;" />
+</p>
+
 ## Overview
 A full-stack eCommerce web application built with Django, featuring product browsing, cart functionality, and a simulated checkout system.
+
+
 
 ## Visit live version
 https://simpleshop-80f5b8cdaaaa.herokuapp.com/
