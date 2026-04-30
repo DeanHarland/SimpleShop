@@ -78,15 +78,72 @@ def cart_view(request):
         'cart_items_count': cart_items_count,
     })
 
+# @login_required
+# def checkout(request):
+#     cart = request.session.get('cart', {})
+
+#     if not cart:
+#         return redirect('product_list')
+
+#     total = 0
+#     order = Order.objects.create(user=request.user if request.user.is_authenticated else None,total=0)
+
+#     for key, value in cart.items():
+#         product = Product.objects.get(pk=key)
+#         quantity = value['quantity']
+
+#         total += product.price * quantity
+
+#         OrderItem.objects.create(
+#             order=order,
+#             product=product,
+#             quantity=quantity,
+#             price=product.price
+#         )
+
+#     order.total = total
+#     order.save()
+
+#     request.session['cart'] = {}
+
+#     return redirect('order_confirmation', order_id=order.id)
+
+def order_confirmation(request, order_id):
+    order = Order.objects.get(id=order_id)
+    items = OrderItem.objects.filter(order=order)
+
+    return render(request, 'store/order_confirmation.html', {
+        'order': order,
+        'items': items
+    })
+
 @login_required
-def checkout(request):
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).annotate(item_count=Count('orderitem')).order_by('-created_at')
+    return render(request, 'store/my_orders.html', {'orders': orders})
+
+def payment_view(request):
+    cart = request.session.get('cart', {})
+
+    if not cart:
+        return redirect('product_list')
+    
+    if request.method == 'POST':
+        return redirect('process_payment')
+
+    return  render(request, 'store/payment.html')
+
+def process_payment(request):
     cart = request.session.get('cart', {})
 
     if not cart:
         return redirect('product_list')
 
     total = 0
-    order = Order.objects.create(user=request.user if request.user.is_authenticated else None,total=0)
+    order = Order.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        total=0
+    )
 
     for key, value in cart.items():
         product = Product.objects.get(pk=key)
@@ -107,17 +164,3 @@ def checkout(request):
     request.session['cart'] = {}
 
     return redirect('order_confirmation', order_id=order.id)
-
-def order_confirmation(request, order_id):
-    order = Order.objects.get(id=order_id)
-    items = OrderItem.objects.filter(order=order)
-
-    return render(request, 'store/order_confirmation.html', {
-        'order': order,
-        'items': items
-    })
-
-@login_required
-def my_orders(request):
-    orders = Order.objects.filter(user=request.user).annotate(item_count=Count('orderitem')).order_by('-created_at')
-    return render(request, 'store/my_orders.html', {'orders': orders})
