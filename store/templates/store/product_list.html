@@ -1,20 +1,43 @@
 {% extends 'store/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'store/css/product_list.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Products</h1>
-<a href="{% url 'cart' %}">View Cart</a>
-{% for product in products %}
-    <div>
-        <h2>
-            <a href="{% url 'product_detail' product.pk %}">
-                {{ product.name }}
-            </a>
-        </h2>
-        <p>£{{ product.price }}</p>
-        <a href="{% url 'add_to_cart' product.pk %}">
-        Add to Cart
-        </a>
+<section class="catalog">
+    <div class="catalog__header">
+        <div>
+            <p class="catalog__eyebrow">SimpleShop</p>
+            <h1>Products</h1>
+            <p class="catalog__subtitle">Clean essentials, organized for your browsing pleasure.</p>
+        </div>
+        <a class="catalog__cart-link" href="{% url 'cart' %}">View Cart</a>
     </div>
-    <hr>
-{% endfor %}
+
+    <div class="product-grid">
+        {% for product in products %}
+            <article class="product-card">
+                <a class="product-card__media" href="{% url 'product_detail' product.pk %}">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="product-card__placeholder">No image</div>
+                    {% endif %}
+                </a>
+
+                <div class="product-card__body">
+                    <h2 class="product-card__title">
+                        <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a>
+                    </h2>
+                    <p class="product-card__price">£{{ product.price }}</p>
+                    <a class="product-card__button" href="{% url 'add_to_cart' product.pk %}">Add to Cart</a>
+                </div>
+            </article>
+        {% empty %}
+            <p class="catalog__empty">No products available yet.</p>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}

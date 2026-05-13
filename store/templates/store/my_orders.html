@@ -1,13 +1,123 @@
 {% extends 'store/base.html' %}
 
-<h1>My Orders</h1>
+{% block extra_css %}
+<style>
+.orders-page {
+    margin-top: 24px;
+}
 
-{% for order in orders %}
-    <div>
-        <p>Order ID: {{ order.id }}</p>
-        <p>Total: £{{ order.total }}</p>
-        <p>Date: {{ order.created_at }}</p>
+.orders-page__heading {
+    margin: 0 0 8px;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    letter-spacing: -0.03em;
+}
+
+.orders-page__intro {
+    margin: 0 0 20px;
+    color: var(--muted);
+}
+
+.orders-list {
+    display: grid;
+    gap: 14px;
+}
+
+.order-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 14px 32px rgba(20, 20, 20, 0.06);
+}
+
+.order-card__label {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.order-card__id {
+    margin: 0 0 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.order-card__date,
+.order-card__items {
+    margin: 0;
+    color: var(--muted);
+}
+
+.order-card__summary {
+    min-width: 140px;
+    align-self: center;
+    text-align: right;
+}
+
+.order-card__total {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.order-card__summary-label {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.orders-empty {
+    padding: 28px;
+    border: 1px dashed var(--border);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--muted);
+}
+
+@media (max-width: 640px) {
+    .order-card {
+        grid-template-columns: 1fr;
+    }
+
+    .order-card__summary {
+        text-align: left;
+        min-width: 0;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="orders-page">
+    <h1 class="orders-page__heading">My Orders</h1>
+    <p class="orders-page__intro">A tidy history of your completed purchases.</p>
+
+    <div class="orders-list">
+        {% for order in orders %}
+            <article class="order-card">
+                <div>
+                    <p class="order-card__label">Order</p>
+                    <h2 class="order-card__id">#{{ order.id }}</h2>
+                    <p class="order-card__items">{{ order.item_count }} item{{ order.item_count|pluralize }}</p>
+                    <p class="order-card__date">Placed on {{ order.created_at }}</p>
+                </div>
+
+                <div class="order-card__summary">
+                    <p class="order-card__total">£{{ order.total }}</p>
+                    <p class="order-card__summary-label">Order total</p>
+                </div>
+            </article>
+        {% empty %}
+            <div class="orders-empty">
+                <p>No orders yet.</p>
+            </div>
+        {% endfor %}
     </div>
-{% empty %}
-    <p>No orders yet</p>
-{% endfor %}
+</section>
+{% endblock %}
